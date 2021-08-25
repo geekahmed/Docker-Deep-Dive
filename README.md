@@ -37,6 +37,10 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 - [Chapter 5. The Docker Engine](#chapter5-the-docker-engine)
 	- [1.-Docker Engine - The TLDR]()
 	- [2.-Docker Engine - The Deep Dive]()
+- [Chapter 6. Images](#chapter6-images)
+	- [1.-Docker Images - The TLDR]()
+	- [2.-Docker Images - The Deep Dive]()
+	- [3.-Images - The Commands]()
 <!-- /TOC -->
 
 # Chapter 5. The Docker Engine
@@ -70,4 +74,38 @@ Contributions: Issues, comments and pull requests are super welcome 😃
  - runc can be used as a standalone CLI tool to create containers. It’s based on code from libcontainer, and can also be used by other projects and third-party tools.
  - There is still a lot of functionality implemented in the Docker daemon. More of this may be broken out over time. Functionality currently still inside of the Docker daemon include, but is not limited to: the API, image management, authentication, security features, core networking, and volumes.
  - The work of modularizing the Docker engine is ongoing.
+
+# Chapter 6. Images
+## Section 1: Docker Images - The TLDR
+ - A Docker is like a VM template or a class in OOP.
+ - The images are pulled from a registery and the default is Docker Hub
+ - Images are made up of multiple layers that get stacked on top of each
+   other and represented as a single object.
+## Section 2: Docker Images - The Deep Dive
+ - Images are build-time constructs while containers are run-time constructs.
+ - An image will not be deleted unless the last container uses it is stopped and destroyed.
+ - Image registries are the storage area for the images.
+ - Image registries contains multiple image repositories.
+ - Image repositories can contain multiple images.
+ - The latest tag doesn't gruarantee it is the most recent image in the repository.
+ - Each image may be tagged with more than one tag.
+ - Filtering images using `docker image ls --filter` which supports: dangling, before, since, and label.
+ - A dangling image is an image that is no longer tagged and appears in listings as `< none >:< none >`
+ - A Docker Image is just a bunch of loosely-connected read-only layers.
+ - Docker employs a storage driver that is responsible for stacking layers and presenting them as a single unified filesystem.
+ - Storage drivers on Linux includes AUFS, overlay2, devicemapper, btrfs, and zfs.
+ - Multiple images can, and do, share layers. This leads to efficiencies in space and performance.
+ - Each image has a content hash and a distrbution hash.
+ - The content hash is the SHA256 of the image content.
+ - The distrbution hash is the has for the compressed image.
+ - Multi-architecture images has a manifest lists and manifests.
+## Section 3: Images - The Commands
+
+ - `docker image pull` is the command to download images.
+ - `docker image ls` lists all of the images stored in your Docker
+   host’s local cache. To see the SHA256 digests of images add the
+   --digests flag.
+ - `docker image inspect` gives you all of the glorious details of an
+   image — layer data and metadata.
+ - `docker image rm` is the command to delete images. You cannot delete an image that is associated with a container in the running (Up) or stopped (Exited) states.
 
