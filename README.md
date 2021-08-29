@@ -1,4 +1,5 @@
 
+
 This is my summary of the Docker Deep Dive, by Nigel Poulton. This book is considered a great introduction to Docker with practical exercises as found in the real-world projects.
 
 Contributions: Issues, comments and pull requests are super welcome 😃
@@ -41,6 +42,10 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 	- [1.-Docker Images - The TLDR]()
 	- [2.-Docker Images - The Deep Dive]()
 	- [3.-Images - The Commands]()
+- [Chapter 7. Containers](#chapter-7-containers)
+	- [1.-Docker Containers - The TLDR]()
+	- [2.-Docker Containers - The Deep Dive]()
+	- [3.-Containers - The Commands]()
 <!-- /TOC -->
 
 # Chapter 5. The Docker Engine
@@ -109,3 +114,48 @@ Contributions: Issues, comments and pull requests are super welcome 😃
    image — layer data and metadata.
  - `docker image rm` is the command to delete images. You cannot delete an image that is associated with a container in the running (Up) or stopped (Exited) states.
 
+# Chapter 7. Containers
+## Section 1: Docker Containers - The TLDR
+ - A container is the runtime instance of an image.
+	 - Like starting a virtual machine from a virtual machine template or intializing an object from a class.
+ - Containers run until the app they are executing exits.
+## Section 2: Docker Containers - The Deep Dive
+ - Containers an VMs both need a host to run.
+	- Personal PC.
+	- Bare-metal server.
+	- The public cloud.
+ - Hypervisors perform hardware virtualization while containers perform OS virtualization.
+ - VM/OS tax is the resources used by the OS /VMs from the physical/virtual resources (CPU, RAM, Disk, etc.).
+ - The containers share the OS kernel so it will pay one OS tax bill. On the other hand, every VM should install an OS so it will pay much more bill.
+ - Containers start time are much faster compared with VMs start time.
+ - Docker daemon implements the Docker Remote API on local IPC/Unix socket at `/var/run/docker.sock`.
+ - It is possible to configure the Docker client and daemon to communicate over the network. The default non-TLS port is 2375, and the default TLS port is 2376.
+ - Images are highly optimized fot containers. This means they don't have all of the normal commands and package installed.
+ - Killing the main process in the container will also kill the container.
+ - Containers could be stopped, started, restarted, and paused as many times as wanted.
+ - There is no loss in container's data excepts if it is deleted.
+	- If so, there is a concept called volume which persist data even if the container deleted.
+ - It is a best practice to firstly stop the container then removing it as this way will give a chance to the process running inside the container to organize itself before the end.
+	- Docker sends "SIGTERM" to the process inside it to exit and if not so, it sends "SIGKILL". Using the two-way approch.
+ - Restart policy is a form of self-healing that enables Docker to automatically restart them after certain events or failures have occured.
+ - Restart policies are applied per-container.
+	- It can be configured imperatively on the cli.
+	- It can be configured declaratively in Compose files or Docker stacks.
+ - Always policy will always restart the stopped container unless it has been explicitly stopped using for example `docker container stop`. Also, it will restart the container if the daemon restarts.
+ - Unless-stopped policy is like the always policy except it will not restart the container if the daemon restarted if they were in the "Stopped" state.
+ - The on-failure policy will restart the container if it exits with a non-zero exit code. It will also restarts the container when the Docker daemon restarts, even containers that were in the stopped state.
+ - `docker container run -d`. The -d flag called daemon mode which make the container to run in the background and not attach our shell to it.
+ - The port mappings are expressed as `host-port:container-port`.
+ - It is common to build images with default commands as it makes starting containers easier.
+	- It also forces a default behavior and is a form of self-documentation for the image.
+## Section 3: Containers - The commands
+ - `docker container run` is the command used to start new containers.
+ - `Ctrl-PQ` will detach your shell from the terminal of a container and leave the container running (UP) in the background.
+ - `docker container ls` lists all containers in the running (UP) state.
+	 - The -a flag you will also see containers in the stopped (Exited) state.
+ - `docker container exec` lets you run a new process inside of a running container.
+ - `docker container stop` will stop a running container and put it in the Exited (0) state. 
+ -  `docker container start` will restart a stopped (Exited) container. You can give docker container start the name or ID of a container.
+ - `docker container rm` will delete a stopped container.
+	 - The -f flag will force removing a non-stopped container.
+ - `docker container inspect` will show you detailed configuration and runtime information about a container. It accepts container names and container IDs as its main argument.
