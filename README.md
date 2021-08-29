@@ -46,6 +46,10 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 	- [1.-Docker Containers - The TLDR]()
 	- [2.-Docker Containers - The Deep Dive]()
 	- [3.-Containers - The Commands]()
+- [Chapter 8. Containerizing an app](#chapter-8-containerizing-an-app)
+	- [1.-Containerizing an app - The TLDR]()
+	- [2.-Containerizing an app - The deep dive]()
+	- [3.-Containerizing an app - The commands]()
 <!-- /TOC -->
 
 # Chapter 5. The Docker Engine
@@ -159,3 +163,45 @@ Contributions: Issues, comments and pull requests are super welcome 😃
  - `docker container rm` will delete a stopped container.
 	 - The -f flag will force removing a non-stopped container.
  - `docker container inspect` will show you detailed configuration and runtime information about a container. It accepts container names and container IDs as its main argument.
+
+# Chapter 8. Containerizing an app
+## Section 1: Containerizing an app - The TLDR
+ - The process of taking an application and configuring it to run as a container is called containerizing.
+ - The process of containerizing the app as follow:
+	 - Start with the application code.
+	 - Create Dockerfile that describes the app, its dependencies, and how to run it.
+	 - Feed the Dockerfile into the `docker image build` command.
+## Section 2: Containerizing an app - The deep dive
+- The directory containing the application is referred to as the build context.
+	- A common practice to keep Dockerfile in the root directory of the build context.
+	- It is important that Dockerfile starts with capital "D" and is all one word.
+- The purpose of Dockerfile:
+	- Describe the application.
+	- Tell Docker how to containerizw the application.
+- Some instructions create new layers like:
+	- FROM
+	- RUN
+	- COPY
+- Others add just metadate like:
+	- EXPOSE
+	- WORKDIR
+	- ENV
+	- ENTRYPOINT
+- If an instruction is adding content such as files and programs to the image, it will create a new layer.
+	- If it is adding instructions on how to build the image and run the applications, it will create metadata.
+- Leverage the build cache
+	- Invalidating cache invalidates it for the remainder of the build.
+	- Build images in a way that places any instructions that are likely to change towards the end of the file.
+- Squash the image.
+- Use no-install-recommends.
+- Don't install from MSI packages for windows.
+## Section 3: Containerizing an app - The commands
+- `docker image build` is the command that reads a Dockerfile and containerizes an application.
+	- The -t flag tags the image, and the -f flag lets you specify the name and location of the Dockerfile. With the -f flag, it is possible to use a Dockerfile with an arbitrary name and in an arbitrary location.
+	- The build context is where your application files exist, and this can be a directory on your local Docker host or a remote Git repo.
+- The FROM instruction in a Dockerfile specifies the base image for the new image you will build. It is usually the first instruction in a Dockerfile.
+- The RUN instruction in a Dockerfile allows you to run commands inside the image which create new layers. Each RUN instruction creates a single new layer.
+- The COPY instruction in a Dockerfile adds files into the image as a new layer. It is common to use the COPY instruction to copy your application code into an image.
+- The EXPOSE instruction in a Dockerfile documents the network port that the application uses.
+- The ENTRYPOINT instruction in a Dockerfile sets the default application to run when the image is started as a container.
+
