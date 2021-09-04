@@ -1,5 +1,3 @@
-
-
 This is my summary of the Docker Deep Dive, by Nigel Poulton. This book is considered a great introduction to Docker with practical exercises as found in the real-world projects.
 
 Contributions: Issues, comments and pull requests are super welcome 😃
@@ -54,6 +52,10 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 	- [1.-Deploying apps with Compose - The TLDR]()
 	- [2.-Deploying apps with Compose - The Deep Dive]()
 	- [3.-Deploying apps with Compose - The commands]()
+- [Chapter 10. Docker Swarm](#chapter-10-Docker-Swarm)
+	- [1.-Docker Swarm - The TLDR]()
+	- [2.-Docker Swarm - The Deep Dive]()
+	- [3.-Docker Swarm - The commands]()
 <!-- /TOC -->
 
 # Chapter 5. The Docker Engine
@@ -232,3 +234,49 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 - `docker-compose restart` will restart a Compose app that has been stopped with docker-compose stop. If you have made changes to your Compose app since stopping it, these changes will not appear in the restarted app. You will need to re-deploy the app to get the changes.
 - `docker-compose ps` will list each container in the Compose app. It shows current state, the command each one is running, and network ports.
 - `docker-compose down` will stop and delete a running Compose app. It deletes containers and networks, but not volumes and images.
+
+# Chapter 10. Docker Swarm
+## Section 1: Docker Swarm - The TLDR
+- Docker Swarm is composed of
+	- Enterprise-grade secure cluster of Docker hosts
+	- Engine for orchestrating microservices apps.
+- Clustering front provides
+	- Grouping one or more Docker nodes.
+	- Encrypted distributed cluster store.
+	- Encrypted networks.
+	- Mutual TLS.
+	- Secure cluster join tokens.
+	- PKI to manage and rotate certificates.
+- Orchestration front
+	- Swarm exposes a rich API that allows to deploy and manage complicated microservices apps with ease.
+	- Apps are defined in declarative manifest files and deployed with native Docker commands.
+	- It enables us performing updates, rollbacks, and scaling operations with simple commands.
+## Section 2: Docker Swarm - The Deep Dive
+- Swarm consists of one or more nodes
+	- Physical servers
+	- VMs
+	- Rasberry Pi
+	- Cloud instances
+- Nodes are configured as managers or workers
+	- Managers: Control plane of the cluster
+	- Workers: Accepts tasks from managers and execute them
+- The configuration and state of the swarm is held in a distributed etcd database located on all managers.
+- TLS is integrated in the swarm
+	- Encrypt communication
+	- Authenticate nodes
+	- Authorize roles
+- On the application orchestration front, the atomic unit of scheduling on a swarm is the service.
+- When a container is wrapped in a service, it is called a task or replica.
+- Prerequistes of building a swarm
+	- Each node needs Docker installed and have a connection to communicate with the rest of the swarm.
+	- Networking for each node should be configured as follow:
+		- 2377/tcp: for secure client-to-swarm communication
+		- 7946/tcp and 7946/udp: for control plane gossip
+		- 4789/udp: for VXLAN-based overlay networks
+- The process of building a swarm is
+	- Initialize the first manager node
+	- Join additional manager nodes
+	- Join worker nodes
+- Docker nodes that aren't part of a swarm are said to be in single-engine mode.
+	- Once they are added to the swarm, they are switched into swarm mode.
+## Section 3: Docker Swarm - The commands
