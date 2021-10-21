@@ -279,4 +279,38 @@ Contributions: Issues, comments and pull requests are super welcome 😃
 	- Join worker nodes
 - Docker nodes that aren't part of a swarm are said to be in single-engine mode.
 	- Once they are added to the swarm, they are switched into swarm mode.
+- Swarm managers have native support for high availability (HA).
+- Swarm implements a form of active-passive multi-manager HA.
+	- The active manager is called leader.
+	- The non-active managers proxy the commands to the active one.
+- Swarm uses Raft consensus algorithm to implement the Raft terminology.
+- The best practices for managers and HA:
+	- Deploy an odd number of managers.
+	- Don't deploy too many managers (3 or 5 is ok).
+- Odd number of managers reduces the chances of split-brain conditions.
+- Some potential compromises to the cluster are:
+	- Old managers re-joining a swarm automatically decrypt and gain access to the Raft log time-series database.
+	- Restoring old backups can wipe the current swarm configuration.
+- These situations could be prevented by locking the swarm using Autolock.
+- Swarm services let you specify most of the container options, such as name, port, mappings, attaching to networks, and images.
+	- They let us declare the desired state for an application service, feed that to Docker, and let Docker take care of deploying it and mangaing it.
+- The swarm runs a background reconciliation loop that constantly comares the actual state of the service to the desired state.
+- The differrence between global and replicated mode is that in global mode runs a single replica on every node in the swarm, while in the replicated mode it deploys the desired number of replicas and distributes them as evenly as possible accross the cluster.
+- Passing a service "-p 80:80" flag will make the mode of publishing on every node even nodes not running service replicas.
+	- This mode is called ingress and the oposite is the host mode which publishes the service to the node running only the replicas.
 ## Section 3: Docker Swarm - The commands
+- `docker swarm init` is the command to create a new swarm. The node that you run the command on becomes the first manager and is switched to run in swarm mode.
+- `docker swarm join-token` reveals the commands and tokens needed to join workers and managers to existing swarms.
+	- To expose the command to join a new manager, use the `docker swarm join-token manager` command.
+	- To get the command to join a worker, use the `docker swarm join-token worker` command.
+- `docker node ls` lists all nodes in the swarm including which are managers and which is the leader.
+- `docker service create` is the command to create a new service.
+- `docker service ls` lists running services in the swarm and gives basic info on the state of the service and any replicas it’s running.
+- `docker service ps <service>` gives more detailed information about indi- vidual service replicas.
+- `docker service inspect` gives very detailed information on a service.  
+	- It accepts the `--pretty` flag to limit the information returned to the most important information.
+- `docker service scale` lets you scale the number of replicas in a service up and down.
+- `docker service update` lets you update many of the properties of a running service.
+- `docker service logs` lets you view the logs of a service.
+- `docker service rm` is the command to delete a service from the swarm.
+	- Use it with caution as it deletes all service replicas without asking for  confirmation.
